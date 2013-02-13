@@ -46,7 +46,7 @@ npm install seneca-jsonfile-store
 
 ## Usage
 
-You don't use this module directly. It provides the an underlying data storage engine for the Seneca entity API:
+You don't use this module directly. It provides an underlying data storage engine for the Seneca entity API:
 
 ```JavaScript
 var entity = seneca.make$('typename')
@@ -63,7 +63,7 @@ entity.remove$( {id: ...}, function(err,entity){ ... } )
 ## Test
 
 ```bash
-cd test/db
+cd test
 mocha jsonfile.test.js --seneca.log.print
 ```
 

@@ -6,9 +6,6 @@
 var seneca = require('seneca')
 var shared = seneca.test.store.shared
 
-//var m = require('..')
-//console.dir(m)
-
 
 var si = seneca()
 si.use(require('..'),{
