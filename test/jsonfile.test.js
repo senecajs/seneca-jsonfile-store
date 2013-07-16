@@ -1,3 +1,5 @@
+/*jslint node: true */
+/*jslint asi: true */
 /* Copyright (c) 2013 Richard Rodger, MIT License */
 
 "use strict";
@@ -39,3 +41,4 @@ function extratest(si,done) {
   si.__testcount++
   done()
 }
+
