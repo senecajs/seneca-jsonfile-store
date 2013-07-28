@@ -1,5 +1,5 @@
-/*jslint node: true */
-/*jslint asi: true */
+/*jslint node: true, asi: true */
+/*globals describe, it */
 /* Copyright (c) 2013 Richard Rodger, MIT License */
 
 "use strict";
