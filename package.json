@@ -17,7 +17,8 @@
     "json",
     "file"
   ],
-  "author": "Richard Rodger",
+  "author": "Richard Rodger (http://richardrodger.com/)",
+  "contributors": ["Peter Elger <elger.peter@gmail.com> (http://peterelger.com/)"],
   "license": "MIT",
   "dependencies": {
     "underscore": "~1.4.4"
