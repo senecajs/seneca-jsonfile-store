@@ -34,20 +34,15 @@ describe('jsonfile', function(){
 
     var product = si.make('product')
 
+    product.id$ = '12345'
     product.name = 'pear'
 
     si.act(
-      { role:'entity', cmd:'save', ent: product, id$:'12345'},
+      { role:'entity', cmd:'save', ent: product},
       function( err, product ) {
         assert(!err)
         assert.equal(product.id, '12345')
-
-        si.act(
-          { role:'entity', cmd:'load', q:{id:product.id}, qent:product},
-          function( err, product ) {
-            assert(!err)
-            done()
-          })
+        done()
       })
   })
 
