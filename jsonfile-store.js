@@ -1,18 +1,19 @@
 /* Copyright (c) 2013-2014 Richard Rodger, MIT License */
+/*jslint node: true, asi: true */
 "use strict";
 
 
 var fs   = require('fs')
 var path = require('path')
-
 var _ = require('underscore')
-
-
 var name = 'jsonfile-store'
 
 
 module.exports = function(seneca,opts,cb) {
+  var isodate_re = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
+  var filename_re = /\.json$/
   var desc
+
 
   function good(args,err,cb) {
     if( err ) {
@@ -22,6 +23,7 @@ module.exports = function(seneca,opts,cb) {
     }
     else return true;
   }
+
 
   function ensurefolder(folder,cb){
     fs.exists(folder,function(exists){
@@ -46,7 +48,6 @@ module.exports = function(seneca,opts,cb) {
   }
 
 
-  var isodate_re = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
   function do_load(args,qent,filepath,cb) {
     fs.readFile( filepath, function(err,jsonstr) {
       if( good(args,err,cb) ) {
@@ -66,8 +67,6 @@ module.exports = function(seneca,opts,cb) {
     })
   }
 
-
-  var filename_re = /\.json$/
 
   function do_list(args,qent,q,cb) {
     // used by load, list, remove
@@ -96,7 +95,6 @@ module.exports = function(seneca,opts,cb) {
                         return nextfile(i+1)
                       }
                     }
-
                     entlist.push(fent)
                     nextfile(i+1)
                   }
@@ -106,7 +104,6 @@ module.exports = function(seneca,opts,cb) {
             }
             else cb( null, entlist);
           }
-
         })
       }
     })      
@@ -136,7 +133,6 @@ module.exports = function(seneca,opts,cb) {
 
     save: function(args,cb) {
       var ent = args.ent    
-
       var create = !ent.id;
 
       if( null != ent.id$ ) {
@@ -160,7 +156,6 @@ module.exports = function(seneca,opts,cb) {
         var folderpath = makefolderpath(ent)
 
         ensurefolder( folderpath, function(err) {
-
           function handledate_replacer(key,val) {
             if( _.isDate(val) ) {
               return val.toISOString()
@@ -170,7 +165,6 @@ module.exports = function(seneca,opts,cb) {
 
           if( good(args,err,cb) ) {
             var filepath = path.join( folderpath, ent.id+'.json' )
-
             var entdata = ent.data$()
             var jsonstr = JSON.stringify(entdata)
 
@@ -282,18 +276,14 @@ module.exports = function(seneca,opts,cb) {
     if( err ) return cb(err);
 
     desc = description
-
     opts.folder = path.normalize( opts.folder || '.' )
-
     fs.exists( opts.folder, function(exists){
       if( !exists ) return seneca.fail({code:'folder-not-found',folder:opts.folder,store:desc,error:err},cb);
-      
       var markerfile = path.join( opts.folder, 'seneca.txt')
       fs.writeFile(markerfile, "This is a jsonfile-store folder.", function(err){
         if( err ) return seneca.fail({code:'folder-not-writable',folder:opts.folder,store:desc,error:err},cb);
       })
     })
-
     cb(null,{name:store.name,tag:tag})
   })
 }
