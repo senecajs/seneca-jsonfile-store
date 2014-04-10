@@ -1,15 +1,15 @@
-/* Copyright (c) 2013 Richard Rodger, MIT License */
+/* Copyright (c) 2013-2014 Richard Rodger, MIT License */
 
 "use strict";
 
 
 var seneca = require('seneca')
-var shared = seneca.test.store.shared
+var shared = require('seneca-store-test')
 
 
 var si = seneca()
 si.use(require('..'),{
-  folder:'db'
+  folder:__dirname+'/db'
 })
 
 si.__testcount = 0

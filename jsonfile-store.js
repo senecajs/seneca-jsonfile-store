@@ -1,4 +1,4 @@
-/* Copyright (c) 2013 Richard Rodger, MIT License */
+/* Copyright (c) 2013-2014 Richard Rodger, MIT License */
 "use strict";
 
 
@@ -139,7 +139,12 @@ module.exports = function(seneca,opts,cb) {
 
       var create = !ent.id;
 
-      if( create ) {
+      if( null != ent.id$ ) {
+        var id = ent.id$
+        delete ent.id$
+        do_save(id)
+      }
+      else if( create ) {
         seneca.act({role:'util', cmd:'generate_id'}, function(err,id){
           if( err ) return cb(err);
           do_save(id)

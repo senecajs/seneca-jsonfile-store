@@ -1,10 +1,10 @@
 {
   "name": "seneca-jsonfile-store",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Seneca data store plugin that uses plain JSON files",
-  "main": "lib/jsonfile-store.js",
+  "main": "jsonfile-store.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +20,12 @@
   "author": "Richard Rodger",
   "license": "MIT",
   "dependencies": {
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "seneca-store-test": "~0.1.0"
   },
   "devDependencies": {
-    "seneca": "~0.5.1"
+    "seneca": "~0.5.1",
+    "mocha": "~1.18.2"
   },
   "files": [
     "LICENSE.txt",
