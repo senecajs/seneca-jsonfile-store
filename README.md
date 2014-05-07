@@ -13,9 +13,9 @@ workloads, and as a example of a storage plugin code base.
 If you're using this module, feel free to contact me on twitter if you
 have any questions! :) [@rjrodger](http://twitter.com/rjrodger)
 
-Current Version: 0.1.4
+Current Version: 0.1.5
 
-Tested on: node 0.10.24, seneca 0.5.17
+Tested on: node 0.10.26, seneca 0.5.17
 
 [![Build Status](https://travis-ci.org/rjrodger/seneca-jsonfile-store.png?branch=master)](https://travis-ci.org/rjrodger/seneca-jsonfile-store)
 
@@ -26,13 +26,11 @@ Tested on: node 0.10.24, seneca 0.5.17
 var seneca = require('seneca')()
 seneca.use('jsonfile-store',{folder:'/path/to/my-db-folder'})
 
-seneca.ready(function(){
-  var apple = seneca.make$('fruit')
-  apple.name  = 'Pink Lady'
-  apple.price = 0.99
-  apple.save$(function(err,apple){
-    console.log( "apple.id = "+apple.id  )
-  })
+var apple = seneca.make$('fruit')
+apple.name  = 'Pink Lady'
+apple.price = 0.99
+apple.save$(function(err,apple){
+  console.log( "apple.id = "+apple.id  )
 })
 ```
 
