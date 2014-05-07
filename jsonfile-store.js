@@ -132,7 +132,7 @@ module.exports = function(seneca,opts,cb) {
     name: name,
 
     save: function(args,cb) {
-      var ent = args.ent    
+      var ent = args.ent
       var create = !ent.id;
 
       if( null != ent.id$ ) {
@@ -146,7 +146,7 @@ module.exports = function(seneca,opts,cb) {
           do_save(id)
         })
       }
-      else do_save();
+      else do_save(ent.id$);
 
       function do_save(id) {
         if( id ) {
