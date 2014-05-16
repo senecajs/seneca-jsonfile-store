@@ -30,10 +30,5 @@
   "devDependencies": {
     "seneca": "~0.5.17",
     "mocha": "~1.18.2"
-  },
-  "files": [
-    "LICENSE.txt",
-    "README.md",
-    "seneca-jsonfile-store.js"
-  ]
+  }
 }
