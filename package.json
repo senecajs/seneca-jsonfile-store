@@ -1,6 +1,6 @@
 {
   "name": "seneca-jsonfile-store",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Seneca data store plugin that uses plain JSON files",
   "main": "jsonfile-store.js",
   "scripts": {
@@ -34,6 +34,6 @@
   "files": [
     "LICENSE.txt",
     "README.md",
-    "seneca-jsonfile-store.js"
+    "jsonfile-store.js"
   ]
 }
