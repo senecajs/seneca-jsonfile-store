@@ -146,7 +146,7 @@ module.exports = function(seneca,opts,cb) {
           do_save(id)
         })
       }
-      else do_save(ent.id$);
+      else do_save();
 
       function do_save(id) {
         if( id ) {
