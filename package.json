@@ -1,6 +1,6 @@
 {
   "name": "seneca-jsonfile-store",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Seneca data store plugin that uses plain JSON files",
   "main": "jsonfile-store.js",
   "scripts": {
@@ -19,13 +19,14 @@
   ],
   "author": "Richard Rodger (http://richardrodger.com/)",
   "contributors": [
-    "Peter Elger (http://peterelger.com/)",
-    "Matteo Collina (http://www.matteocollina.com/)"
+    "Peter Elger (http://peterelger.com)",
+    "Matteo Collina (http://www.matteocollina.com)",
+    "Michele Capra (https://twitter.com/piccoloaiutante)"
   ],
   "license": "MIT",
   "dependencies": {
     "underscore": "~1.6.0",
-    "seneca-store-test": "~0.1.1"
+    "seneca-store-test": "~0.2.1"
   },
   "devDependencies": {
     "seneca": "~0.5.18",
