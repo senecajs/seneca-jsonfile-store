@@ -15,7 +15,7 @@ have any questions! :) [@rjrodger](http://twitter.com/rjrodger)
 
 Current Version: 0.1.7
 
-Tested on: node 0.10.26, seneca 0.5.17
+Tested on: node 0.10.29, seneca 0.5.19
 
 [![Build Status](https://travis-ci.org/rjrodger/seneca-jsonfile-store.png?branch=master)](https://travis-ci.org/rjrodger/seneca-jsonfile-store)
 
