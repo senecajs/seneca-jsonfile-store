@@ -57,7 +57,10 @@ module.exports = function( options, register ) {
 
   function do_load(args,qent,filepath,cb) {
     fs.readFile( filepath, function(err,jsonstr) {
-      if( good(args,err,cb) ) {
+      if( err && 'ENOENT' == err.code ) {
+        return cb(null,null)
+      }
+      else if( good(args,err,cb) ) {
         // TODO: handle JSON parse error
         var data = JSON.parse(jsonstr,function(key,val){
           if( _.isString(val) ) {

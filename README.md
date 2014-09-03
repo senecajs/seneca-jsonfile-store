@@ -1,4 +1,7 @@
-# seneca-jsonfile-store
+seneca-jsonfile-store - a [Seneca](http://senecajs.org) plugin
+======================================================
+
+## seneca-jsonfile-store Plugin
 
 ### Node.js seneca data storage module that uses JSON files.
 
@@ -7,17 +10,29 @@ storage engine that uses JSON files to persist data. It is not
 appropriate for production usage, it is intended for very low
 workloads, and as a example of a storage plugin code base.
 
+[![Build Status](https://travis-ci.org/rjrodger/seneca-jsonfile-store.png?branch=master)](https://travis-ci.org/rjrodger/seneca-jsonfile-store)
 
-### Support
+[![NPM](https://nodei.co/npm/seneca-jsonfile-store.png)](https://nodei.co/npm/seneca-jsonfile-store/)
+[![NPM](https://nodei.co/npm-dl/seneca-jsonfile-store.png)](https://nodei.co/npm-dl/seneca-jsonfile-store/)
 
-If you're using this module, feel free to contact me on twitter if you
+For a gentle introduction to Seneca itself, see the
+[senecajs.org](http://senecajs.org) site.
+
+If you're using this plugin module, feel free to contact me on twitter if you
 have any questions! :) [@rjrodger](http://twitter.com/rjrodger)
 
-Current Version: 0.1.8
+Current Version: 0.1.9
 
-Tested on: node 0.10.29, seneca 0.5.18
+Tested on: Seneca 0.5.19, Node 0.10.29
 
-[![Build Status](https://travis-ci.org/rjrodger/seneca-jsonfile-store.png?branch=master)](https://travis-ci.org/rjrodger/seneca-jsonfile-store)
+
+
+## Install
+
+```sh
+npm install seneca
+npm install seneca-jsonfile-store
+```
 
 
 ### Quick example
@@ -35,12 +50,6 @@ apple.save$(function(err,apple){
 ```
 
 
-## Install
-
-```sh
-npm install seneca
-npm install seneca-jsonfile-store
-```
 
 
 ## Usage
