@@ -297,7 +297,7 @@ module.exports = function( options ) {
     fs.exists( options.folder, function(exists){
       if( !exists ) 
         return done(error('folder-not-found',
-                          {folder:options.folder,store:desc,error:err}));
+                          {folder:options.folder,store:desc}));
 
       var markerfile = path.join( options.folder, 'seneca.txt')
       fs.writeFile(markerfile, "This is a jsonfile-store folder.", function(err){
