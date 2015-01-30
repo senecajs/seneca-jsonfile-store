@@ -279,19 +279,20 @@ module.exports = function( options ) {
     },
 
 
-    close: function(cb) {
+    close: function(args,done) {
+      done()
     },
 
     
-    native: function(done){
+    native: function(args,done){
       done(null,options.folder)
     }
   }
 
 
   var storedesc = seneca.store.init(seneca,options,store)
-  var tag       = store.tag
-  var desc      = store.desc
+  var tag       = storedesc.tag
+  var desc      = storedesc.desc
 
   seneca.add({init:store.name,tag:tag},function(args,done){
     fs.exists( options.folder, function(exists){
