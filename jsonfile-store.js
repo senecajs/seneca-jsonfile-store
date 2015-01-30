@@ -1,31 +1,34 @@
-/* Copyright (c) 2013-2014 Richard Rodger, MIT License */
+/* Copyright (c) 2013-2015 Richard Rodger, MIT License */
 /*jslint node: true, asi: true */
 "use strict";
 
 
 var fs   = require('fs')
 var path = require('path')
-var _ = require('underscore')
+
+var _     = require('lodash')
+var error = require('eraro')({package:'seneca-jsonfile-store'})
+
 var name = 'jsonfile-store'
 
 
-module.exports = function( options, register ) {
+module.exports = function( options ) {
   var seneca = this
 
   options = seneca.util.deepextend({
     must_merge: false
   },options)
 
+  options.folder = path.normalize( options.folder || '.' )
 
   var isodate_re = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
   var filename_re = /\.json$/
-  var desc
 
 
   // FIX: this is a bit silly, refactor out
   function good(args,err,cb) {
     if( err ) {
-      cb( seneca.fail('entity_error',{store:name,error:err,args:args}))
+      cb( error('entity_error',{store:name,error:err,args:args}) )
       return false;
     }
     else return true;
@@ -179,7 +182,7 @@ module.exports = function( options, register ) {
             var jsonstr = JSON.stringify(entdata,handledate_replacer)
 
             if( options.must_merge ) {
-              return cb(seneca.fail('store-merge-unsupported',{args:args}))
+              return cb(error('store-merge-unsupported',{args:args}))
             }
 
             fs.writeFile( filepath, jsonstr, function(err){
@@ -286,27 +289,28 @@ module.exports = function( options, register ) {
   }
 
 
-  seneca.store.init(seneca,options,store,function(err,tag,description){
-    if( err ) return register(err);
+  var storedesc = seneca.store.init(seneca,options,store)
+  var tag       = store.tag
+  var desc      = store.desc
 
-    desc = description
-    options.folder = path.normalize( options.folder || '.' )
-
+  seneca.add({init:store.name,tag:tag},function(args,done){
     fs.exists( options.folder, function(exists){
       if( !exists ) 
-        return seneca.die('folder-not-found',
-                          {folder:options.folder,store:desc,error:err});
+        return done(error('folder-not-found',
+                          {folder:options.folder,store:desc,error:err}));
 
       var markerfile = path.join( options.folder, 'seneca.txt')
       fs.writeFile(markerfile, "This is a jsonfile-store folder.", function(err){
         if( err ) 
-          return seneca.die('folder-not-writable',
-                            {folder:options.folder,store:desc,error:err});
+          return done(error('folder-not-writable',
+                            {folder:options.folder,store:desc,error:err}));
+
+        return done();
       })
     })
-
-    register(null,{name:store.name,tag:tag})
   })
+
+  return {name:store.name,tag:tag}
 }
 
 

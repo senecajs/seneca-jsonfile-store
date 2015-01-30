@@ -12,18 +12,15 @@ workloads, and as a example of a storage plugin code base.
 
 [![Build Status](https://travis-ci.org/rjrodger/seneca-jsonfile-store.png?branch=master)](https://travis-ci.org/rjrodger/seneca-jsonfile-store)
 
-[![NPM](https://nodei.co/npm/seneca-jsonfile-store.png)](https://nodei.co/npm/seneca-jsonfile-store/)
-[![NPM](https://nodei.co/npm-dl/seneca-jsonfile-store.png)](https://nodei.co/npm-dl/seneca-jsonfile-store/)
-
 For a gentle introduction to Seneca itself, see the
 [senecajs.org](http://senecajs.org) site.
 
 If you're using this plugin module, feel free to contact me on twitter if you
 have any questions! :) [@rjrodger](http://twitter.com/rjrodger)
 
-Current Version: 0.1.9
+Current Version: 0.2.0
 
-Tested on: Seneca 0.5.19, Node 0.10.29
+Tested on: Seneca 0.6.1, Node 0.10.36
 
 
 

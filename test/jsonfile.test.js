@@ -11,7 +11,7 @@ var assert = require('assert')
 
 
 var si = seneca({log:'silent'})
-si.use(require('..'),{
+si.use('..',{
   folder: __dirname + '/db'
 })
 
