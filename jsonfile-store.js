@@ -40,6 +40,7 @@ module.exports = function( options ) {
       if( exists ) return cb();
 
       fs.mkdir(folder,function(err){
+        if (err && err.code === 'EEXIST') err = null
         cb(err)
       })
     })
