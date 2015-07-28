@@ -104,7 +104,7 @@ module.exports = function( options ) {
 
                     // match query
                     for(var p in q) {
-                      if( !~p.indexOf('$') && !_.get(fent, p, false) ) {
+                      if( !~p.indexOf('$') && _.get(fent, p, false) !== q[p] ) {
                         return nextfile(i+1)
                       }
                     }
