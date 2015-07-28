@@ -50,10 +50,10 @@ module.exports = function( options ) {
     var canon = ent.canon$({object:true})
     var base   = canon.base
     var name   = canon.name
-    
+
     var entfolder = (base?base+'_':'')+name
     var folderpath = path.join( options.folder, entfolder )
-    
+
     return folderpath
   }
 
@@ -84,12 +84,12 @@ module.exports = function( options ) {
   function do_list(args,qent,q,cb) {
     // used by load, list, remove
     var entlist = []
-    
+
     var folderpath = makefolderpath(qent)
     ensurefolder( folderpath, function(err) {
       if( good(args,err,cb) ) {
-        
-        fs.readdir( folderpath, function(err,filelist) { 
+
+        fs.readdir( folderpath, function(err,filelist) {
           if( good(args,err,cb) ) {
             nextfile(0)
           }
@@ -104,7 +104,7 @@ module.exports = function( options ) {
 
                     // match query
                     for(var p in q) {
-                      if( !~p.indexOf('$') && q[p] != fent[p] ) {
+                      if( !~p.indexOf('$') && _.get(fent, p, false) !== q[p] ) {
                         return nextfile(i+1)
                       }
                     }
@@ -119,7 +119,7 @@ module.exports = function( options ) {
           }
         })
       }
-    })      
+    })
   }
 
 
@@ -239,8 +239,8 @@ module.exports = function( options ) {
       var q    = args.q
 
       var all  = q.all$ // default false
-      var load  = _.isUndefined(q.load$) ? true : q.load$ // default true 
- 
+      var load  = _.isUndefined(q.load$) ? true : q.load$ // default true
+
       if( all ) {
         do_list(args,qent,q,function(err,entlist){
           function next_remove(i) {
@@ -283,7 +283,7 @@ module.exports = function( options ) {
       done()
     },
 
-    
+
     native: function(args,done){
       done(null,options.folder)
     }
@@ -296,13 +296,13 @@ module.exports = function( options ) {
 
   seneca.add({init:store.name,tag:tag},function(args,done){
     fs.exists( options.folder, function(exists){
-      if( !exists ) 
+      if( !exists )
         return done(error('folder-not-found',
                           {folder:options.folder,store:desc}));
 
       var markerfile = path.join( options.folder, 'seneca.txt')
       fs.writeFile(markerfile, "This is a jsonfile-store folder.", function(err){
-        if( err ) 
+        if( err )
           return done(error('folder-not-writable',
                             {folder:options.folder,store:desc,error:err}));
 
@@ -313,5 +313,3 @@ module.exports = function( options ) {
 
   return {name:store.name,tag:tag}
 }
-
-
