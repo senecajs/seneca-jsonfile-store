@@ -68,10 +68,5 @@ entity.remove$( {id: ...}, function(err,entity){ ... } )
 ## Test
 
 ```bash
-cd test
-mocha jsonfile.test.js --seneca.log.print
+npm test
 ```
-
-
-
-
