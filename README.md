@@ -51,7 +51,8 @@ apple.save$(function (err, apple) {
 
 ## Usage
 
-You don't use this module directly. It provides an underlying data storage engine for the Seneca entity API:
+You don't use this module directly. It provides an underlying data storage engine
+for the Seneca entity API:
 
 ```js
 var entity = seneca.make$('typename')
