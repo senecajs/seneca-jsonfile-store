@@ -3,8 +3,16 @@
   "version": "0.2.2",
   "description": "Seneca data store plugin that uses plain JSON files",
   "main": "jsonfile-store.js",
+  "license": "MIT",
+  "author": "Richard Rodger (http://richardrodger.com/)",
+  "contributors": [
+    "Peter Elger (http://peterelger.com)",
+    "Matteo Collina (http://www.matteocollina.com)",
+    "Michele Capra (https://twitter.com/piccoloaiutante)",
+    "Dean McDonnell (http://mcdonnelldean.me)"
+  ],
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/*.test.js"
+    "test": "lab test/*.test.js -r console -v"
   },
   "repository": {
     "type": "git",
@@ -17,25 +25,13 @@
     "json",
     "file"
   ],
-  "author": "Richard Rodger (http://richardrodger.com/)",
-  "contributors": [
-    "Peter Elger (http://peterelger.com)",
-    "Matteo Collina (http://www.matteocollina.com)",
-    "Michele Capra (https://twitter.com/piccoloaiutante)"
-  ],
-  "license": "MIT",
   "dependencies": {
     "eraro": "^0.4.1",
-    "lodash": "~3.10.1",
-    "seneca-store-test": "~0.2.2"
+    "lodash": "^3.10.1",
+    "seneca": "^0.6.5"
   },
   "devDependencies": {
-    "mocha": "^2.1.0",
-    "seneca": "plugin"
-  },
-  "files": [
-    "LICENSE.txt",
-    "README.md",
-    "jsonfile-store.js"
-  ]
+    "lab": "^5.16.0",
+    "seneca-store-test": "^0.2.2"
+  }
 }
