@@ -24,7 +24,7 @@ describe('JSON File Store', function () {
     CommonTests.basictest(seneca, done)
   })
 
-  it('Additional Tests', function (done) {
+  it('Common Tests Completed', function (done) {
     CommonTests.closetest(seneca, testcount, done)
   })
 })

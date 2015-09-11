@@ -27,11 +27,11 @@
   ],
   "dependencies": {
     "eraro": "^0.4.1",
-    "lodash": "^3.10.1",
-    "seneca": "^0.6.5"
+    "lodash": "^3.10.1"
   },
   "devDependencies": {
     "lab": "^5.16.0",
+    "seneca": "^0.6.5",
     "seneca-store-test": "^0.2.2"
   }
 }
