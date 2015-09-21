@@ -5,20 +5,14 @@
 [![travis][travis-badge]][travis-url]
 [![npm][npm-badge]][npm-url]
 
-This module is a plugin for [Seneca.js][]. It provides a storage engine that uses
-JSON files to persist data. It is not appropriate for production usage, it is
-intended for very low workloads, and as a example of a storage plugin code base.
-
+This module is a plugin for [Seneca.js][]. It provides a storage engine that uses JSON files to
+persist data. This module is not appropriate for production usage, it is intended for very low
+workloads, and as a example of a storage plugin code base.
 
 For a gentle introduction to Seneca itself, see the [senecajs.org][seneca.js] site.
 
-If you're using this plugin module, feel free to contact me on twitter if you
-have any questions! :) [@rjrodger](http://twitter.com/rjrodger)
-
-
 ## Install
-To install, simply use npm. Remember you will need to install [Seneca.js][]
-seperately.
+To install, simply use npm. Remember you will need to install [Seneca.js][] separately.
 
 ```
 npm install seneca
@@ -32,11 +26,12 @@ To run tests, simply use npm:
 npm run test
 ```
 
-## Example
-
+## Quick Example
 ```js
 var seneca = require('seneca')()
-seneca.use('jsonfile-store', { folder:'/path/to/my-db-folder' })
+seneca.use('jsonfile-store', {
+  folder:'/path/to/my-db-folder'
+})
 
 var apple = seneca.make$('fruit')
 apple.name  = 'Pink Lady'
@@ -46,11 +41,7 @@ apple.save$(function (err, apple) {
 })
 ```
 
-
-
-
 ## Usage
-
 You don't use this module directly. It provides an underlying data storage engine
 for the Seneca entity API:
 
@@ -65,21 +56,34 @@ entity.list$({ property: ... }, function (err, entity) { ... })
 entity.remove$({ id: ... }, function (err, entity) { ... })
 ```
 
+### Query Support
+The standard Seneca query format is supported:
+
+- `.list$({f1:v1, f2:v2, ...})` implies pseudo-query `f1==v1 AND f2==v2, ...`.
+
+- `.list$({f1:v1,...}, {sort$:{field1:1}})` means sort by f1, ascending.
+
+- `.list$({f1:v1,...}, {sort$:{field1:-1}})` means sort by f1, descending.
+
+- `.list$({f1:v1,...}, {limit$:10})` means only return 10 results.
+
+- `.list$({f1:v1,...}, {skip$:5})` means skip the first 5.
+
+- `.list$({f1:v1,...}, {fields$:['fd1','f2']})` means only return the listed fields.
+
+Note: you can use `sort$`, `limit$`, `skip$` and `fields$` together.
+
 ## Contributing
 We encourage participation. If you feel you can help in any way, be it with
 examples, extra testing, or new features please get in touch.
 
 ## License
-
 Copyright Richard Rodger 2015, Licensed under [MIT][].
 
 [MIT]: ./LICENSE
-[Contribution Guide]: ./CONTRIBUTING.md
-[eg]: ./eg/basic-usage.js
+[Seneca.js]: https://www.npmjs.com/package/seneca
 
 [travis-badge]: https://img.shields.io/travis/rjrodger/seneca-jsonfile-store.svg?style=flat-square
 [travis-url]: https://travis-ci.org/rjrodger/seneca-jsonfile-store
 [npm-badge]: https://img.shields.io/npm/v/seneca-jsonfile-store.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/seneca-jsonfile-store
-
-[Seneca.js]: https://www.npmjs.com/package/seneca
