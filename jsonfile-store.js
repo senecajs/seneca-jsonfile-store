@@ -35,15 +35,21 @@ module.exports = function( options ) {
   }
 
 
-  function ensurefolder(folder,cb){
-    fs.exists(folder,function(exists){
-      if( exists ) return cb();
-
-      fs.mkdir(folder,function(err){
-        if (err && err.code === 'EEXIST') err = null
-        cb(err)
-      })
-    })
+  /**
+   * Return if the folder exists, create otherwise.
+   */
+  function ensurefolder(folder, cb){
+    fs.stat(folder, function(err, stat) {
+      if (!err && stat.isDirectory()) {
+        return cb();
+      }
+      fs.mkdir(folder, function(err) {
+        if (err && err.code === 'EEXIST') {
+          err = null;
+        }
+        cb(err);
+      });
+    });
   }
 
 
