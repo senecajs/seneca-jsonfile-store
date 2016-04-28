@@ -1,6 +1,4 @@
-/* Copyright (c) 2013-2014 Richard Rodger, MIT License */
-
-"use strict"
+'use strict'
 
 var Seneca = require('seneca')
 var Lab = require('lab')
@@ -10,7 +8,7 @@ var lab = exports.lab = Lab.script()
 var describe = lab.describe
 var it = lab.it
 
-var seneca = Seneca({log:'silent'})
+var seneca = Seneca({log: 'silent'})
 seneca.use('..', {
   folder: __dirname + '/db'
 })
