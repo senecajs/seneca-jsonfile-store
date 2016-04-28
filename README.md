@@ -1,10 +1,14 @@
-# seneca-jsonfile-store
+![Seneca](http://senecajs.org/files/assets/seneca-logo.png)
 
 > A [Seneca.js][] data storage plugin
 
-[![travis][travis-badge]][travis-url]
-[![npm][npm-badge]][npm-url]
+# seneca-jsonfile-store
+[![npm version][npm-badge]][npm-url]
+[![Build Status][travis-badge]][travis-url]
+[![Dependency Status][david-badge]][david-url]
+[![Gitter][gitter-badge]][gitter-url]
 
+## Description
 This module is a plugin for [Seneca.js][]. It provides a storage engine that uses JSON files to
 persist data. This module is not appropriate for production usage, it is intended for very low
 workloads, and as a example of a storage plugin code base.
@@ -14,31 +18,9 @@ For a gentle introduction to Seneca itself, see the [senecajs.org][seneca.js] si
 ## Install
 To install, simply use npm. Remember you will need to install [Seneca.js][] separately.
 
-```
+```sh
 npm install seneca
 npm install seneca-jsonfile-store
-```
-
-## Test
-To run tests, simply use npm:
-
-```
-npm run test
-```
-
-## Quick Example
-```js
-var seneca = require('seneca')()
-seneca.use('jsonfile-store', {
-  folder:'/path/to/my-db-folder'
-})
-
-var apple = seneca.make$('fruit')
-apple.name  = 'Pink Lady'
-apple.price = 0.99
-apple.save$(function (err, apple) {
-  console.log("apple.id = " + apple.id )
-})
 ```
 
 ## Usage
@@ -54,6 +36,21 @@ entity.save$(function (err, entity) { ... })
 entity.load$({ id: ... }, function (err, entity) { ... })
 entity.list$({ property: ... }, function (err, entity) { ... })
 entity.remove$({ id: ... }, function (err, entity) { ... })
+```
+
+## Quick Example
+```js
+var seneca = require('seneca')()
+seneca.use('jsonfile-store', {
+  folder:'/path/to/my-db-folder'
+})
+
+var apple = seneca.make$('fruit')
+apple.name  = 'Pink Lady'
+apple.price = 0.99
+apple.save$(function (err, apple) {
+  console.log("apple.id = " + apple.id )
+})
 ```
 
 ### Query Support
@@ -74,16 +71,29 @@ The standard Seneca query format is supported:
 Note: you can use `sort$`, `limit$`, `skip$` and `fields$` together.
 
 ## Contributing
-We encourage participation. If you feel you can help in any way, be it with
-examples, extra testing, or new features please get in touch.
+The [Senecajs org][] encourages open participation. If you feel you
+can help in any way, be it with documentation, examples, extra
+testing, or new features please get in touch.
+
+## Test
+To run tests, simply use npm:
+
+```sh
+npm run test
+```
 
 ## License
-Copyright Richard Rodger 2015, Licensed under [MIT][].
+Copyright (c) 2012-2016, Richard Rodger and other contributors.
+Licensed under [MIT][].
 
 [MIT]: ./LICENSE
+[Senecajs org]: https://github.com/senecajs/
 [Seneca.js]: https://www.npmjs.com/package/seneca
-
-[travis-badge]: https://img.shields.io/travis/rjrodger/seneca-jsonfile-store.svg?style=flat-square
+[npm-badge]: https://img.shields.io/npm/v/seneca-jsonfile-store.svg
+[npm-url]: https://npmjs.com/package/seneca-jsonfile-store
+[david-badge]: https://david-dm.org/rjrodger/seneca-jsonfile-store.svg
+[david-url]: https://david-dm.org/rjrodger/seneca-jsonfile-store
+[travis-badge]: https://travis-ci.org/rjrodger/seneca-jsonfile-store.svg
 [travis-url]: https://travis-ci.org/rjrodger/seneca-jsonfile-store
-[npm-badge]: https://img.shields.io/npm/v/seneca-jsonfile-store.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/seneca-jsonfile-store
+[gitter-badge]: https://badges.gitter.im/Join%20Chat.svg
+[gitter-url]: https://gitter.im/senecajs/seneca
