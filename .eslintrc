@@ -1,17 +1,7 @@
 {
   "extends": "seneca",
-  "parser": "babel-eslint",
-  "plugins": [
-    "react"
-  ],
-  "ecmaFeatures": {
-    "jsx": true,
-    "modules": true
-  },
-  "env": {
-    "browser": true,
-    "amd": true,
-    "es6": true,
-    "node": true
+  "rules": {
+    "no-return-assign": 2,
+    "yoda": 0
   }
 }
