@@ -15,6 +15,9 @@ workloads, and as a example of a storage plugin code base.
 
 For a gentle introduction to Seneca itself, see the [senecajs.org][seneca.js] site.
 
+### Seneca compatibility
+Supports Seneca versions **1.x** and **2.x**
+
 ## Install
 To install, simply use npm. Remember you will need to install [Seneca.js][] separately.
 
