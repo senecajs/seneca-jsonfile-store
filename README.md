@@ -96,7 +96,7 @@ Licensed under [MIT][].
 [npm-url]: https://npmjs.com/package/seneca-jsonfile-store
 [david-badge]: https://david-dm.org/rjrodger/seneca-jsonfile-store.svg
 [david-url]: https://david-dm.org/rjrodger/seneca-jsonfile-store
-[travis-badge]: https://travis-ci.org/rjrodger/seneca-jsonfile-store.svg
-[travis-url]: https://travis-ci.org/rjrodger/seneca-jsonfile-store
+[travis-badge]: https://travis-ci.org/senecajs/seneca-jsonfile-store.svg
+[travis-url]: https://travis-ci.org/senecajs/seneca-jsonfile-store
 [gitter-badge]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/senecajs/seneca
