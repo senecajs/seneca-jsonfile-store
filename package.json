@@ -39,6 +39,7 @@
     "docco": "0.7.x",
     "seneca-store-test": "^0.2.2",
     "eslint-config-seneca": "3.0.x",
+    "eslint-plugin-hapi": "4.x.x",
     "eslint-plugin-standard": "2.0.x",
     "lab": "11.0.x"
   },
