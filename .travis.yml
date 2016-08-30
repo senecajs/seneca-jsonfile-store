@@ -11,6 +11,7 @@ node_js:
   - "5"
 
 before_script:
+  - npm uninstall seneca
   - npm install seneca$SENECA_VER
 
 after_script:
