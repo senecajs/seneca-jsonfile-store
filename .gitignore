@@ -17,3 +17,6 @@ node_modules
 .DS_Store
 test/db/**/*.json
 test/db/**/*.json.DELETE
+
+docs/annotated
+docs/coverage.html
