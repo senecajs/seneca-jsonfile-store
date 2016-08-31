@@ -47,6 +47,7 @@ var seneca = require('seneca')()
 seneca.use('jsonfile-store', {
   folder:'/path/to/my-db-folder'
 })
+.use('entity')
 
 var apple = seneca.make$('fruit')
 apple.name  = 'Pink Lady'
