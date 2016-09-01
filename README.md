@@ -18,6 +18,9 @@ For a gentle introduction to Seneca itself, see the [senecajs.org][seneca.js] si
 ### Seneca compatibility
 Supports Seneca versions **1.x** and **2.x**
 
+### Supported functionality
+All Seneca data store supported functionality is implemented in [seneca-store-test](https://github.com/senecajs/seneca-store-test) as a test suite. The tests represent the store functionality specifications.
+
 ## Install
 To install, simply use npm. Remember you will need to install [Seneca.js][] separately.
 
