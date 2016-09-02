@@ -11,8 +11,12 @@ var before = lab.before
 
 var seneca = Seneca({log: 'silent'})
 
+if (seneca.version >= '3.0.0') {
+  seneca.use(require('seneca-basic'))
+}
+
 if (seneca.version >= '2.0.0') {
-  seneca.use('entity')
+  seneca.use(require('seneca-entity'))
 }
 
 seneca.use('..', {
