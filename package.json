@@ -11,6 +11,9 @@
     "Michele Capra (https://twitter.com/piccoloaiutante)",
     "Dean McDonnell (http://mcdonnelldean.me)"
   ],
+  "pre-commit": [
+    "test"
+  ],
   "scripts": {
     "test": "lab test -r console -v -L",
     "coveralls": "lab -s -P test -r lcov | coveralls",
