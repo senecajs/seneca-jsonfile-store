@@ -15,7 +15,7 @@
     "test"
   ],
   "scripts": {
-    "test": "lab test -r console -v -L",
+    "test": "lab test -r console -v -L -t 83",
     "coveralls": "lab -s -P test -r lcov | coveralls",
     "coverage": "lab -v -P test -L -t 83 -r html > docs/coverage.html",
     "annotate": "docco jsonfile-store.js -o docs/annotated"
