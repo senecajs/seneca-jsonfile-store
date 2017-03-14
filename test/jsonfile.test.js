@@ -9,14 +9,10 @@ var describe = lab.describe
 var it = lab.it
 var before = lab.before
 
-var seneca = Seneca({log: 'silent'})
-
-if (seneca.version >= '3.0.0') {
-  seneca.use(require('seneca-basic'))
-}
+var seneca = Seneca()
 
 if (seneca.version >= '2.0.0') {
-  seneca.use(require('seneca-entity'))
+  seneca.use('entity')
 }
 
 seneca.use('..', {
@@ -27,16 +23,12 @@ before({}, function (done) {
   seneca.ready(done)
 })
 
-var testcount = 0
 seneca.__testcount = 0
 
 describe('JSON File Store', function () {
   it('Common Tests', function (done) {
-    testcount++
-    CommonTests.basictest(seneca, done)
-  })
-
-  it('Common Tests Completed', function (done) {
-    CommonTests.closetest(seneca, testcount, done)
+    seneca.test()
+    CommonTests.basictest({seneca: seneca, script: lab})
+    done()
   })
 })

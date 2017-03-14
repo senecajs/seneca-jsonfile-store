@@ -15,9 +15,9 @@
     "test"
   ],
   "scripts": {
-    "test": "lab test -r console -v -L -t 83",
+    "test": "lab test -r console -v -L -t 80",
     "coveralls": "lab -s -P test -r lcov | coveralls",
-    "coverage": "lab -v -P test -L -t 83 -r html > docs/coverage.html",
+    "coverage": "lab -v -P test -L -t 80 -r html > docs/coverage.html",
     "annotate": "docco jsonfile-store.js -o docs/annotated"
   },
   "repository": {
@@ -42,14 +42,13 @@
   },
   "devDependencies": {
     "docco": "0.7.x",
-    "eslint-config-seneca": "^3.0.0",
+    "eslint-config-seneca": "3.x.x",
     "eslint-plugin-hapi": "4.x.x",
-    "eslint-plugin-standard": "2.0.x",
+    "eslint-plugin-standard": "2.x.x",
     "lab": "11.0.x",
     "pre-commit": "1.1.x",
     "seneca": "plugin",
-    "seneca-basic": "0.5.x",
-    "seneca-entity": "1.3.x",
-    "seneca-store-test": "^0.2.2"
+    "seneca-entity": "2.0.x",
+    "seneca-store-test": "1.0.0"
   }
 }

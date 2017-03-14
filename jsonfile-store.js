@@ -9,12 +9,19 @@ var error = require('eraro')({package: 'seneca-jsonfile-store'})
 
 var name = 'jsonfile-store'
 
+module.exports = jsonfile_store
+Object.defineProperty(module.exports, 'name', {value: 'jsonfile-store'})
 
-module.exports = function (options) {
+function jsonfile_store (options) {
   var seneca = this
 
+  seneca.depends('jsonfile-store', ['entity'])
+
   options = seneca.util.deepextend({
-    must_merge: false
+    must_merge: false,
+
+    // TODO: use seneca.export once it allows for null values
+    generate_id: seneca.root.private$.exports['entity/generate_id']
   }, options)
 
   options.folder = Path.normalize(options.folder || '.')
@@ -156,10 +163,17 @@ module.exports = function (options) {
         do_save(id)
       }
       else if (create) {
-        seneca.act({role: 'util', cmd: 'generate_id'}, function (err, id) {
-          if (err) return cb(err)
-          do_save(id)
-        })
+        id = options.generate_id ? options.generate_id() : void 0
+
+        if (undefined !== id) {
+          return do_save(id)
+        }
+        else {
+          seneca.act({role: 'basic', cmd: 'generate_id'}, function (err, id) {
+            if (err) return cb(err)
+            do_save(id)
+          })
+        }
       }
       else do_save()
 
