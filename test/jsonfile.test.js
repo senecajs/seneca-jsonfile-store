@@ -27,7 +27,6 @@ seneca.__testcount = 0
 
 describe('JSON File Store', function () {
   it('Common Tests', function (done) {
-    seneca.test()
     CommonTests.basictest({seneca: seneca, script: lab})
     done()
   })
