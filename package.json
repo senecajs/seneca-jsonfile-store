@@ -15,10 +15,10 @@
     "test"
   ],
   "scripts": {
-    "test": "lab test -r console -v -L -t 80",
+    "test": "lab test -r console -v -L -t 50",
     "coveralls": "lab -s -P test -r lcov | coveralls",
-    "coverage": "lab -v -P test -L -t 80 -r html > docs/coverage.html",
-    "annotate": "docco jsonfile-store.js -o docs/annotated"
+    "coverage": "lab -v -P test -L -t 50 -r html > docs/coverage.html",
+    "prettier": "prettier --write --no-semi --single-quote *.js lib/*.js test/*.js"
   },
   "repository": {
     "type": "git",
@@ -38,17 +38,13 @@
   ],
   "dependencies": {
     "eraro": "0.4.1",
-    "lodash": "4.15.0"
+    "lodash": "4.17.4"
   },
   "devDependencies": {
-    "docco": "0.7.x",
-    "eslint-config-seneca": "3.x.x",
-    "eslint-plugin-hapi": "4.x.x",
-    "eslint-plugin-standard": "2.x.x",
-    "lab": "11.0.x",
-    "pre-commit": "1.1.x",
+    "lab": "13.1.x",
+    "pre-commit": "1.2.x",
     "seneca": "plugin",
     "seneca-entity": "2.0.x",
-    "seneca-store-test": "1.0.0"
+    "seneca-store-test": "0.3.x"
   }
 }
