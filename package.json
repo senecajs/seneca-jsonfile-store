@@ -15,9 +15,9 @@
     "test"
   ],
   "scripts": {
-    "test": "lab test -r console -v -L -t 50",
+    "test": "lab test -r console -v -L -t 40",
     "coveralls": "lab -s -P test -r lcov | coveralls",
-    "coverage": "lab -v -P test -L -t 50 -r html > docs/coverage.html",
+    "coverage": "lab -v -P test -L -t 40 -r html > docs/coverage.html",
     "prettier": "prettier --write --no-semi --single-quote *.js lib/*.js test/*.js"
   },
   "repository": {
