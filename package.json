@@ -38,7 +38,8 @@
   ],
   "dependencies": {
     "eraro": "0.4.1",
-    "lodash": "4.17.4"
+    "lodash": "4.17.4",
+    "aws-sdk": "2.69.0"
   },
   "devDependencies": {
     "lab": "13.1.x",
