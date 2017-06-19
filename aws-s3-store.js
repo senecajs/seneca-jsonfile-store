@@ -15,7 +15,14 @@ Object.defineProperty(module.exports, 'name', { value: 's3-bucket-store' })
 
 function jsonfile_store(options) {
 
-  var s3 = new aws.S3({ region: options.aws.region });
+  var aws_params =  {region: options.aws.region}
+
+  if (options.aws.accessKeyId && options.aws.secretAccessKey) {
+    aws_params.accessKeyId = options.aws.accessKeyId
+    aws_params.secretAccessKey = options.aws.secretAccessKey
+  }
+
+  var s3 = new aws.S3(aws_params);
 
   var s3Fs = {
     bucketName: '',
