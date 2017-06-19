@@ -15,7 +15,7 @@ Object.defineProperty(module.exports, 'name', { value: 's3-bucket-store' })
 
 function jsonfile_store(options) {
 
-  var aws_params =  {region: options.aws.region}
+  var aws_params = { region: options.aws.region }
 
   if (options.aws.accessKeyId && options.aws.secretAccessKey) {
     aws_params.accessKeyId = options.aws.accessKeyId
@@ -173,50 +173,46 @@ function jsonfile_store(options) {
 
     var folderpath = makefolderpath(qent)
 
-    if (good(args, err, cb)) {
-      s3Fs.listFiles(folderpath, function (err, filelist) {
-        if (err) cb(error('list-files_entity_error', { store: name, error: err, args: args }))
+    s3Fs.listFiles(folderpath, function (err, filelist) {
+      if (err) cb(error('list-files_entity_error', { store: name, error: err, args: args }))
 
-        nextfile(0)
+      nextfile(0)
 
-        function nextfile(i) {
-          var filename = filelist[i]
-          if (filename) {
-            if (filename.match(filename_re)) {
-              var filepath = Path.join(folderpath, filename)
-              do_load(args, qent, filepath, function (err, fent) {
-                if (good(args, err, cb)) {
-                  // match query
-                  for (var p in q) {
-                    if (!~p.indexOf('$') && q[p] !== fent[p]) {
-                      return nextfile(i + 1)
-                    }
+      function nextfile(i) {
+        var filename = filelist[i]
+        if (filename) {
+          if (filename.match(filename_re)) {
+            var filepath = Path.join(folderpath, filename)
+            do_load(args, qent, filepath, function (err, fent) {
+              if (good(args, err, cb)) {
+                // match query
+                for (var p in q) {
+                  if (!~p.indexOf('$') && q[p] !== fent[p]) {
+                    return nextfile(i + 1)
                   }
-                  entlist.push(fent)
-                  nextfile(i + 1)
                 }
-              })
-            } else nextfile(i + 1)
-          } else cb(null, entlist)
-        }
-      })
-    }
+                entlist.push(fent)
+                nextfile(i + 1)
+              }
+            })
+          } else nextfile(i + 1)
+        } else cb(null, entlist)
+      }
+    })
 
   }
 
   function do_remove(args, q, ent, cb) {
     var folderpath = makefolderpath(ent)
 
-    if (good(args, err, cb)) {
-      var filepath = Path.join(folderpath, ent.id + '.json')
-      var filepath_DELETE = Path.join(folderpath, ent.id + '.json.DELETE')
+    var filepath = Path.join(folderpath, ent.id + '.json')
+    var filepath_DELETE = Path.join(folderpath, ent.id + '.json.DELETE')
 
-      s3Fs.rename(filepath, filepath_DELETE, function (err) {
-        if (err) {
-          cb(error('rename_entity_error', { store: name, error: err, args: args }))
-        } else cb()
-      })
-    }
+    s3Fs.rename(filepath, filepath_DELETE, function (err) {
+      if (err) {
+        cb(error('rename_entity_error', { store: name, error: err, args: args }))
+      } else cb()
+    })
 
   }
 
@@ -257,27 +253,27 @@ function jsonfile_store(options) {
           } else return val
         }
 
-        if (good(args, err, cb)) {
-          var filepath = Path.join(folderpath, ent.id + '.json')
-          var entdata = ent.data$()
-          var jsonstr = JSON.stringify(entdata, handledate_replacer)
+        var filepath = Path.join(folderpath, ent.id + '.json')
+        var entdata = ent.data$()
+        var jsonstr = JSON.stringify(entdata, handledate_replacer)
 
-          if (options.must_merge) {
-            return cb(error('store-merge-unsupported', { args: args }))
-          }
-
-          s3Fs.uploadFile(filepath, jsonstr, function (err) {
-            if (good(args, err, cb)) {
-              seneca.log.debug(
-                args.actid$,
-                'save/' + (create ? 'insert' : 'update'),
-                ent,
-                desc
-              )
-              cb(null, ent)
-            }
-          })
+        if (options.must_merge) {
+          return cb(error('store-merge-unsupported', { args: args }))
         }
+
+        s3Fs.uploadFile(filepath, jsonstr, function (err) {
+          if (!err) {
+            seneca.log.debug(
+              args.actid$,
+              'save/' + (create ? 'insert' : 'update'),
+              ent,
+              desc
+            )
+            cb(null, ent)
+          } else {
+            cb(error('save_entity_error', { store: name, error: err, args: args }))
+          }
+        })
 
       }
     },
@@ -289,16 +285,14 @@ function jsonfile_store(options) {
       if (q.id) {
         var folderpath = makefolderpath(qent)
 
-        if (good(args, err, cb)) {
-          var filepath = Path.join(folderpath, q.id + '.json')
+        var filepath = Path.join(folderpath, q.id + '.json')
 
-          do_load(args, qent, filepath, function (err, fent) {
-            if (good(args, err, cb)) {
-              seneca.log.debug(args.actid$, 'load', q, fent, desc)
-              cb(null, fent)
-            }
-          })
-        }
+        do_load(args, qent, filepath, function (err, fent) {
+          if (good(args, err, cb)) {
+            seneca.log.debug(args.actid$, 'load', q, fent, desc)
+            cb(null, fent)
+          }
+        })
 
       } else {
         do_list(args, qent, q, function (err, entlist) {
