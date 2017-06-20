@@ -183,7 +183,7 @@ function jsonfile_store(options) {
         var filename = filelist[i]
         if (filename) {
           if (filename.match(filename_re)) {
-            var filepath = Path.join(folderpath, filename)
+            var filepath = filename
             do_load(args, qent, filepath, function (err, fent) {
               if (good(args, err, cb)) {
                 // match query
