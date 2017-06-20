@@ -85,6 +85,8 @@ function jsonfile_store(options) {
       var fileList = []
       var bucketName = this.bucketName
 
+      console.log(key)
+
       var listCallback = function (err, data) {
         if (err) cb(err, fileList)
 
