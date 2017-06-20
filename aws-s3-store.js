@@ -92,6 +92,8 @@ function jsonfile_store(options) {
           fileList.push(data.Contents[i].Key)
         }
 
+        console.log(fileList)
+
         if (data.IsTruncated) {
           s3.listObjectsV2({
             Bucket: bucketName,
