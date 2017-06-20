@@ -146,10 +146,7 @@ function jsonfile_store(options) {
     var base = canon.base
     var name = canon.name
 
-    var entfolder = (base ? base + '_' : '') + name
-    var folderpath = Path.join(options.folder, entfolder)
-
-    return folderpath
+    return (base ? base + '_' : '') + name
   }
 
   function do_load(args, qent, filepath, cb) {
