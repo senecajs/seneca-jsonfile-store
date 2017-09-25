@@ -1,15 +1,16 @@
 {
-  "name": "seneca-jsonfile-store",
+  "name": "seneca-aws-s3-store",
   "version": "1.0.1",
   "description": "Seneca data store plugin that uses plain JSON files",
-  "main": "jsonfile-store.js",
+  "main": "aws-s3-store.js",
   "license": "MIT",
   "author": "Richard Rodger (http://richardrodger.com/)",
   "contributors": [
     "Peter Elger (http://peterelger.com)",
     "Matteo Collina (http://www.matteocollina.com)",
     "Michele Capra (https://twitter.com/piccoloaiutante)",
-    "Dean McDonnell (http://mcdonnelldean.me)"
+    "Dean McDonnell (http://mcdonnelldean.me)",
+    "David Rueda (https://www.linkedin.com/in/davd33-rueda/)"
   ],
   "pre-commit": [
     "test"
@@ -22,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/senecajs/seneca-jsonfile-store"
+    "url": "https://github.com/senecajs/seneca-aws-s3-store"
   },
   "keywords": [
     "seneca",
@@ -34,11 +35,12 @@
   "files": [
     "LICENSE",
     "README.md",
-    "jsonfile-store.js"
+    "aws-s3-store.js"
   ],
   "dependencies": {
     "eraro": "0.4.1",
-    "lodash": "4.17.4"
+    "lodash": "4.17.4",
+    "aws-sdk": "2.69.0"
   },
   "devDependencies": {
     "lab": "13.1.x",
