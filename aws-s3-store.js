@@ -82,19 +82,13 @@ function jsonfile_store(options) {
     listFiles: function (key, cb) {
       var fileList = []
       var bucketName = options.folder
-      console.log(bucketName)
-
-      console.log(key)
 
       var listCallback = function (err, data) {
         if (err) return cb(err, fileList)
 
         for (var i = 0; i < data.Contents.length; i++) {
           fileList.push(data.Contents[i].Key)
-          console.log(data.Contents[i])
         }
-
-        console.log(fileList)
 
         if (data.IsTruncated) {
           s3.listObjectsV2({
