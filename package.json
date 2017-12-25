@@ -18,7 +18,7 @@
     "test": "lab test -r console -v -L -t 40",
     "coveralls": "lab -s -P test -r lcov | coveralls",
     "coverage": "lab -v -P test -L -t 40 -r html > docs/coverage.html",
-    "prettier": "prettier --write --no-semi --single-quote *.js lib/*.js test/*.js"
+    "prettier": "prettier --write --no-semi --single-quote jsonfile-store.js  test/*.js"
   },
   "repository": {
     "type": "git",
@@ -43,7 +43,8 @@
   "devDependencies": {
     "lab": "13.1.x",
     "pre-commit": "1.2.x",
-    "seneca": "plugin",
+    "prettier": "^1.9.2",
+    "seneca": "^3.4.3",
     "seneca-entity": "2.0.x",
     "seneca-store-test": "0.3.x"
   }
