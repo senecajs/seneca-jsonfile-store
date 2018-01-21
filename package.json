@@ -11,9 +11,6 @@
     "Michele Capra (https://twitter.com/piccoloaiutante)",
     "Dean McDonnell (http://mcdonnelldean.me)"
   ],
-  "pre-commit": [
-    "test"
-  ],
   "scripts": {
     "test": "lab test -r console -v -L -t 40",
     "coveralls": "lab -s -P test -r lcov | coveralls",
@@ -42,7 +39,6 @@
   },
   "devDependencies": {
     "lab": "13.1.x",
-    "pre-commit": "1.2.x",
     "prettier": "^1.9.2",
     "seneca": "^3.4.3",
     "seneca-entity": "2.0.x",
