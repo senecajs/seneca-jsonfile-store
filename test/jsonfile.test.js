@@ -9,9 +9,11 @@ var describe = lab.describe
 var it = lab.it
 var before = lab.before
 
-var seneca = Seneca({ log: 'silent' }).use('entity').use('..', {
-  folder: __dirname + '/db'
-})
+var seneca = Seneca({ log: 'silent' })
+  .use('entity')
+  .use('..', {
+    folder: __dirname + '/db'
+  })
 
 before({}, function(fin) {
   seneca.ready(fin)
