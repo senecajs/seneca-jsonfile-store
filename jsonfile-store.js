@@ -90,6 +90,11 @@ function jsonfile_store(options) {
     // used by load, list, remove
     var entlist = []
 
+    // Place id inside an array
+    if('string' === typeof q) {
+      q = [q]
+    }
+    
     var folderpath = makefolderpath(qent)
     ensurefolder(folderpath, function(err) {
       if (good(args, err, cb)) {
@@ -106,13 +111,21 @@ function jsonfile_store(options) {
                 do_load(args, qent, filepath, function(err, fent) {
                   if (good(args, err, cb)) {
                     // match query
-                    for (var p in q) {
-                      if (!~p.indexOf('$') && q[p] !== fent[p]) {
-                        return nextfile(i + 1)
+                    if(Array.isArray(q)) {
+                      if(-1 != q.indexOf(fent.id)) {
+                        entlist.push(fent)
                       }
+                      nextfile(i + 1)
                     }
-                    entlist.push(fent)
-                    nextfile(i + 1)
+                    else {
+                      for (var p in q) {
+                        if (!~p.indexOf('$') && q[p] !== fent[p]) {
+                          return nextfile(i + 1)
+                        }
+                      }
+                      entlist.push(fent)
+                      nextfile(i + 1)
+                    }
                   }
                 })
               } else nextfile(i + 1)
@@ -194,7 +207,8 @@ function jsonfile_store(options) {
                   ent,
                   desc
                 )
-                cb(null, ent)
+                var out = ent.make$(JSON.parse(JSON.stringify(ent.data$())))
+                cb(null, out)
               }
             })
           }
@@ -260,7 +274,7 @@ function jsonfile_store(options) {
             next_remove(0)
           }
         })
-      } else {
+      } else if( 0 < Object.keys(q).length ) {
         q.limit$ = 1
         do_list(args, qent, q, function(err, list) {
           if (good(args, err, cb)) {
@@ -275,6 +289,7 @@ function jsonfile_store(options) {
           }
         })
       }
+      else cb()
     },
 
     close: function(args, done) {
@@ -282,7 +297,7 @@ function jsonfile_store(options) {
     },
 
     native: function(args, done) {
-      done(null, options.folder)
+      done(null, options)
     }
   }
 
