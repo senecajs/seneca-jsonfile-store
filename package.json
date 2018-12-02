@@ -15,10 +15,13 @@
     "test"
   ],
   "scripts": {
-    "test": "lab test -r console -v -L -t 40",
+    "test": "lab test -r console -v -L -t 40 -I URL,URLSearchParams,BigUint64Array,BigInt64Array,BigInt,SharedArrayBuffer,Atomics",
     "coveralls": "lab -s -P test -r lcov | coveralls",
     "coverage": "lab -v -P test -L -t 40 -r html > docs/coverage.html",
-    "prettier": "prettier --write --no-semi --single-quote *.js lib/*.js test/*.js"
+    "prettier": "prettier --write --no-semi --single-quote *.js lib/*.js test/*.js",
+    "clean-npm": "rm -rf node_modules package-lock.json",
+    "repo-tag": "REPO_VERSION=`node -e \"console.log(require('./package').version)\"`; echo TAG: v$REPO_VERSION; git commit -a -m v$REPO_VERSION; git tag v$REPO_VERSION; git push --tags;",
+    "repo-publish": "npm run repo-tag; npm publish --access public"
   },
   "repository": {
     "type": "git",
@@ -37,14 +40,13 @@
     "jsonfile-store.js"
   ],
   "dependencies": {
-    "eraro": "0.4.1",
-    "lodash": "4.17.4"
+    "eraro": "1.1",
+    "lodash": "4"
   },
   "devDependencies": {
-    "lab": "13.1.x",
-    "pre-commit": "1.2.x",
+    "lab": "14",
     "seneca": "plugin",
-    "seneca-entity": "2.0.x",
-    "seneca-store-test": "0.3.x"
+    "seneca-entity": "2",
+    "seneca-store-test": "1"
   }
 }
