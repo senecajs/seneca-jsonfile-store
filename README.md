@@ -8,6 +8,9 @@
 [![Dependency Status][david-badge]][david-url]
 [![Gitter][gitter-badge]][gitter-url]
 
+| ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
+|---|---|
+
 ## Description
 This module is a plugin for [Seneca.js][]. It provides a storage engine that uses JSON files to
 persist data. This module is not appropriate for production usage, it is intended for very low
