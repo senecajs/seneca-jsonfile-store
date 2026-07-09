@@ -1,5 +1,5 @@
 {
-  "name": "seneca-jsonfile-store",
+  "name": "@seneca/jsonfile-store",
   "version": "1.0.1",
   "description": "Seneca data store plugin that uses plain JSON files",
   "main": "jsonfile-store.js",
