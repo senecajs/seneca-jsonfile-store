@@ -19,7 +19,13 @@ before({}, function(fin) {
 
 describe('JSON File Store', function() {
   it('Common Tests', function(fin) {
-    CommonTests.basictest(seneca, {})
+    seneca.test(fin)
+    
+    CommonTests.basictest({
+      seneca: seneca,
+      senecaMerge: seneca,
+      script: lab
+    })
     fin()
   })
 })
