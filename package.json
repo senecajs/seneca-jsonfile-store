@@ -1,6 +1,6 @@
 {
   "name": "@seneca/jsonfile-store",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Seneca data store plugin that uses plain JSON files",
   "main": "jsonfile-store.js",
   "license": "MIT",
@@ -11,21 +11,23 @@
     "Michele Capra (https://twitter.com/piccoloaiutante)",
     "Dean McDonnell (http://mcdonnelldean.me)"
   ],
-  "pre-commit": [
-    "test"
-  ],
   "scripts": {
-    "test": "lab test -r console -v -L -t 40 -I URL,URLSearchParams,BigUint64Array,BigInt64Array,BigInt,SharedArrayBuffer,Atomics",
-    "coveralls": "lab -s -P test -r lcov | coveralls",
-    "coverage": "lab -v -P test -L -t 40 -r html > docs/coverage.html",
-    "prettier": "prettier --write --no-semi --single-quote *.js lib/*.js test/*.js",
+    "test": "lab -v -P test -t 40",
+    "coverage": "lab -v -P test -t 40 -r html > docs/coverage.html",
+    "prettier": "prettier --write --no-semi --single-quote *.js test/*.js",
     "clean-npm": "rm -rf node_modules package-lock.json",
     "repo-tag": "REPO_VERSION=`node -e \"console.log(require('./package').version)\"`; echo TAG: v$REPO_VERSION; git commit -a -m v$REPO_VERSION; git tag v$REPO_VERSION; git push --tags;",
     "repo-publish": "npm run repo-tag; npm publish --access public"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/senecajs/seneca-jsonfile-store"
+    "url": "git+https://github.com/senecajs/seneca-jsonfile-store.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "keywords": [
     "seneca",
@@ -37,16 +39,22 @@
   "files": [
     "LICENSE",
     "README.md",
+    "CHANGES.md",
     "jsonfile-store.js"
   ],
   "dependencies": {
-    "eraro": "1.1",
-    "lodash": "4"
+    "eraro": "^3.1.1",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "lab": "14",
-    "seneca": "plugin",
-    "seneca-entity": "2",
-    "seneca-store-test": "1"
+    "@hapi/code": "^9.0.3",
+    "@hapi/lab": "^26.0.1",
+    "@seneca/entity": "^29.0.0",
+    "@seneca/store-test": "^7.0.0",
+    "seneca": "^4.0.0"
+  },
+  "peerDependencies": {
+    "@seneca/entity": "^29.0.0",
+    "seneca": "^4.0.0"
   }
 }
