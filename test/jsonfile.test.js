@@ -14,9 +14,9 @@ const { expect } = Code
 
 const folder = Path.join(__dirname, 'db')
 
-function make_seneca(opts) {
+function make_seneca(opts, logspec) {
   return Seneca({ legacy: false })
-    .test()
+    .test(logspec)
     .use('@seneca/entity')
     .use('..', Object.assign({ folder: folder }, opts))
 }
@@ -106,6 +106,96 @@ describe('jsonfile-store options', function () {
       .data$({ id: foo0.id, b: 3, merge$: false })
       .save$()
     expect(foo1.data$(false)).to.equal({ id: foo0.id, b: 3 })
+    await s0.close()
+  })
+})
+
+describe('jsonfile-store concurrency', { timeout: 20000 }, function () {
+  before(() => {
+    for (const name of ['cnc', 'bad']) {
+      Fs.rmSync(Path.join(folder, name), { recursive: true, force: true })
+    }
+  })
+
+  // Big files widen the window in which a save is part way through.
+  function bigdata(more) {
+    const data = {}
+    for (let i = 0; i < 1000; i++) data['f' + i] = 'v' + i
+    return Object.assign(data, more)
+  }
+
+  it('merges concurrent saves of the same entity in turn', async function () {
+    const s0 = make_seneca()
+    await s0.ready()
+    const foo0 = await s0.entity('cnc').data$(bigdata()).save$()
+
+    for (let round = 0; round < 5; round++) {
+      const saves = []
+      for (let i = 0; i < 10; i++) {
+        saves.push(
+          s0
+            .entity('cnc')
+            .data$({ id: foo0.id, ['m' + i]: round })
+            .save$()
+        )
+      }
+      await Promise.all(saves)
+    }
+
+    const foo1 = await s0.entity('cnc').load$(foo0.id)
+    expect(foo1.f999).to.equal('v999')
+    for (let i = 0; i < 10; i++) expect(foo1['m' + i]).to.equal(4)
+    await s0.close()
+  })
+
+  it('loads and lists whole files during saves', async function () {
+    const s0 = make_seneca({ merge: false })
+    await s0.ready()
+    const foo0 = await s0.entity('cnc').data$(bigdata()).save$()
+
+    for (let round = 0; round < 5; round++) {
+      const acts = []
+      for (let i = 0; i < 10; i++) {
+        acts.push(
+          s0
+            .entity('cnc')
+            .data$(bigdata({ id: foo0.id, n: i }))
+            .save$(),
+          s0.entity('cnc').load$(foo0.id),
+          s0.entity('cnc').list$()
+        )
+      }
+      for (const out of await Promise.all(acts)) {
+        const foo = Array.isArray(out)
+          ? out.find((foo) => foo0.id === foo.id)
+          : out
+        expect(foo.f999).to.equal('v999')
+      }
+    }
+    await s0.close()
+  })
+
+  it('reports a file that does not parse as an error', async function () {
+    const s0 = make_seneca({}, 'silent')
+    await s0.ready()
+    const foo0 = await s0.entity('bad').data$({ a: 1 }).save$()
+    const filepath = Path.join(folder, 'bad', foo0.id + '.json')
+    Fs.writeFileSync(filepath, '{"a":')
+
+    const err0 = await s0
+      .entity('bad')
+      .load$(foo0.id)
+      .catch((err) => err)
+    expect(err0.code).to.equal('entity_error')
+
+    const err1 = await s0
+      .entity('bad')
+      .data$({ id: foo0.id, b: 2 })
+      .save$()
+      .catch((err) => err)
+    expect(err1.code).to.equal('entity_error')
+
+    Fs.unlinkSync(filepath)
     await s0.close()
   })
 })

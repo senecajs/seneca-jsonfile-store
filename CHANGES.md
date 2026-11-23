@@ -22,6 +22,11 @@ First version published as `@seneca/jsonfile-store`. Versions up to
   `store-merge-unsupported`, is removed.
 * `save$` replies with a copy of the stored data, with dates as `Date`
   objects as `load$` gives them.
+* `save$` writes a temporary file in the entity folder and renames it
+  over the entity file, so that `load$` and `list$` never read a partly
+  written file. Saves of the same entity in one process run in turn, so
+  that concurrent merges are not lost. A file that is not valid JSON is
+  an `entity_error` for the action instead of an uncaught exception.
 * Errors (`folder-not-found`, `folder-not-writable`, `entity_error`)
   are created again on Node.js 24: `eraro` moves from 1.1 to `^3.1.1`,
   because `eraro` 1.1 calls `util.isError`, which Node.js 23 removed.

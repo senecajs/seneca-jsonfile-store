@@ -8,6 +8,10 @@ var error = require('eraro')({ package: 'seneca-jsonfile-store' })
 
 var name = 'jsonfile-store'
 
+// Saves of the same file, queued by file path, across store instances.
+var savequeues = {}
+var tmpcount = 0
+
 module.exports = jsonfile_store
 Object.defineProperty(module.exports, 'name', { value: 'jsonfile-store' })
 
@@ -78,13 +82,53 @@ function jsonfile_store(options) {
     return folderpath
   }
 
+  /**
+   * Run the saves of the same file one at a time, so that a merge reads
+   * the file that the previous save wrote.
+   */
+  function inturn(filepath, task, cb) {
+    var key = Path.resolve(filepath)
+    var queue = savequeues[key] || (savequeues[key] = [])
+    queue.push(function() {
+      task(function() {
+        queue.shift()
+        if (queue.length) {
+          queue[0]()
+        } else delete savequeues[key]
+        cb.apply(null, arguments)
+      })
+    })
+    if (1 === queue.length) {
+      queue[0]()
+    }
+  }
+
+  /**
+   * Write a temporary file in the same folder and rename it over the
+   * target, so that readers never see a partly written file.
+   */
+  function writefile(filepath, jsonstr, cb) {
+    var tmppath = filepath + '.' + process.pid + '.' + ++tmpcount + '.tmp'
+    Fs.writeFile(tmppath, jsonstr, function(err) {
+      if (err) {
+        return Fs.unlink(tmppath, function() {
+          cb(err)
+        })
+      }
+      Fs.rename(tmppath, filepath, cb)
+    })
+  }
+
   function do_load(args, qent, filepath, cb) {
     Fs.readFile(filepath, function(err, jsonstr) {
       if (err && 'ENOENT' === err.code) {
         return cb(null, null)
       } else if (good(args, err, cb)) {
-        // TODO: handle JSON parse error
-        var data = parse_json(jsonstr)
+        try {
+          var data = parse_json(jsonstr)
+        } catch (err) {
+          return good(args, err, cb)
+        }
         var fent = qent.make$(data)
         cb(null, fent)
       }
@@ -209,24 +253,35 @@ function jsonfile_store(options) {
               JSON.stringify(ent.data$(), handledate_replacer)
             )
 
-            if (!merge) {
-              return write(filepath, entdata)
-            }
+            inturn(
+              filepath,
+              function(cb) {
+                if (!merge) {
+                  return write(filepath, entdata, cb)
+                }
 
-            Fs.readFile(filepath, function(err, jsonstr) {
-              if (err && 'ENOENT' === err.code) {
-                return write(filepath, entdata)
-              } else if (good(args, err, cb)) {
-                write(filepath, Object.assign(JSON.parse(jsonstr), entdata))
-              }
-            })
+                Fs.readFile(filepath, function(err, jsonstr) {
+                  if (err && 'ENOENT' === err.code) {
+                    return write(filepath, entdata, cb)
+                  } else if (good(args, err, cb)) {
+                    try {
+                      var data = JSON.parse(jsonstr)
+                    } catch (err) {
+                      return good(args, err, cb)
+                    }
+                    write(filepath, Object.assign(data, entdata), cb)
+                  }
+                })
+              },
+              cb
+            )
           }
         })
 
-        function write(filepath, data) {
+        function write(filepath, data, cb) {
           var jsonstr = JSON.stringify(data)
 
-          Fs.writeFile(filepath, jsonstr, function(err) {
+          writefile(filepath, jsonstr, function(err) {
             if (good(args, err, cb)) {
               seneca.log.debug(
                 'save/' + (create ? 'insert' : 'update'),
