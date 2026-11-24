@@ -36,6 +36,13 @@ function jsonfile_store(options) {
   var isodate_re = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
   var filename_re = /\.json$/
 
+  // Reject ids containing path separators or '..' so that they cannot be
+  // used to escape the configured storage folder (path traversal).
+  function safe_id(id) {
+    var idstr = String(id)
+    return !/[\/\\]/.test(idstr) && '.' !== idstr && '..' !== idstr
+  }
+
   function parse_json(jsonstr) {
     return JSON.parse(jsonstr, function(key, val) {
       if (_.isString(val)) {
@@ -186,6 +193,10 @@ function jsonfile_store(options) {
   }
 
   function do_remove(args, q, ent, cb) {
+    if (!safe_id(ent.id)) {
+      return cb(error('invalid-id', { id: ent.id, store: name }))
+    }
+
     var folderpath = makefolderpath(ent)
     ensurefolder(folderpath, function(err) {
       if (good(args, err, cb)) {
@@ -228,6 +239,10 @@ function jsonfile_store(options) {
       function do_save(id) {
         if (id) {
           ent.id = id
+        }
+
+        if (!safe_id(ent.id)) {
+          return cb(error('invalid-id', { id: ent.id, store: name }))
         }
 
         var folderpath = makefolderpath(ent)
@@ -302,6 +317,10 @@ function jsonfile_store(options) {
       var q = args.q
 
       if (q.id) {
+        if (!safe_id(q.id)) {
+          return cb(error('invalid-id', { id: q.id, store: name }))
+        }
+
         var folderpath = makefolderpath(qent)
 
         ensurefolder(folderpath, function(err) {
