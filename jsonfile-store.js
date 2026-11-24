@@ -8,6 +8,10 @@ var error = require('eraro')({ package: 'seneca-jsonfile-store' })
 
 var name = 'jsonfile-store'
 
+// Saves of the same file, queued by file path, across store instances.
+var savequeues = {}
+var tmpcount = 0
+
 module.exports = jsonfile_store
 Object.defineProperty(module.exports, 'name', { value: 'jsonfile-store' })
 
@@ -16,9 +20,10 @@ function jsonfile_store(options) {
 
   seneca.depends('jsonfile-store', ['entity'])
 
-  options = seneca.util.deepextend(
+  options = seneca.util.deep(
     {
-      must_merge: false,
+      // save$ merges into the stored entity; false replaces it.
+      merge: true,
 
       // TODO: use seneca.export once it allows for null values
       generate_id: seneca.root.private$.exports['entity/generate_id']
@@ -30,6 +35,16 @@ function jsonfile_store(options) {
 
   var isodate_re = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
   var filename_re = /\.json$/
+
+  function parse_json(jsonstr) {
+    return JSON.parse(jsonstr, function(key, val) {
+      if (_.isString(val)) {
+        if (val.match(isodate_re)) {
+          return new Date(val)
+        } else return val
+      } else return val
+    })
+  }
 
   // FIX: this is a bit silly, refactor out
   function good(args, err, cb) {
@@ -67,19 +82,53 @@ function jsonfile_store(options) {
     return folderpath
   }
 
+  /**
+   * Run the saves of the same file one at a time, so that a merge reads
+   * the file that the previous save wrote.
+   */
+  function inturn(filepath, task, cb) {
+    var key = Path.resolve(filepath)
+    var queue = savequeues[key] || (savequeues[key] = [])
+    queue.push(function() {
+      task(function() {
+        queue.shift()
+        if (queue.length) {
+          queue[0]()
+        } else delete savequeues[key]
+        cb.apply(null, arguments)
+      })
+    })
+    if (1 === queue.length) {
+      queue[0]()
+    }
+  }
+
+  /**
+   * Write a temporary file in the same folder and rename it over the
+   * target, so that readers never see a partly written file.
+   */
+  function writefile(filepath, jsonstr, cb) {
+    var tmppath = filepath + '.' + process.pid + '.' + ++tmpcount + '.tmp'
+    Fs.writeFile(tmppath, jsonstr, function(err) {
+      if (err) {
+        return Fs.unlink(tmppath, function() {
+          cb(err)
+        })
+      }
+      Fs.rename(tmppath, filepath, cb)
+    })
+  }
+
   function do_load(args, qent, filepath, cb) {
     Fs.readFile(filepath, function(err, jsonstr) {
       if (err && 'ENOENT' === err.code) {
         return cb(null, null)
       } else if (good(args, err, cb)) {
-        // TODO: handle JSON parse error
-        var data = JSON.parse(jsonstr, function(key, val) {
-          if (_.isString(val)) {
-            if (val.match(isodate_re)) {
-              return new Date(val)
-            } else return val
-          } else return val
-        })
+        try {
+          var data = parse_json(jsonstr)
+        } catch (err) {
+          return good(args, err, cb)
+        }
         var fent = qent.make$(data)
         cb(null, fent)
       }
@@ -90,6 +139,11 @@ function jsonfile_store(options) {
     // used by load, list, remove
     var entlist = []
 
+    // Place id inside an array
+    if('string' === typeof q) {
+      q = [q]
+    }
+    
     var folderpath = makefolderpath(qent)
     ensurefolder(folderpath, function(err) {
       if (good(args, err, cb)) {
@@ -106,13 +160,21 @@ function jsonfile_store(options) {
                 do_load(args, qent, filepath, function(err, fent) {
                   if (good(args, err, cb)) {
                     // match query
-                    for (var p in q) {
-                      if (!~p.indexOf('$') && q[p] !== fent[p]) {
-                        return nextfile(i + 1)
+                    if(Array.isArray(q)) {
+                      if(-1 != q.indexOf(fent.id)) {
+                        entlist.push(fent)
                       }
+                      nextfile(i + 1)
                     }
-                    entlist.push(fent)
-                    nextfile(i + 1)
+                    else {
+                      for (var p in q) {
+                        if (!~p.indexOf('$') && q[p] !== fent[p]) {
+                          return nextfile(i + 1)
+                        }
+                      }
+                      entlist.push(fent)
+                      nextfile(i + 1)
+                    }
                   }
                 })
               } else nextfile(i + 1)
@@ -170,35 +232,68 @@ function jsonfile_store(options) {
 
         var folderpath = makefolderpath(ent)
 
-        ensurefolder(folderpath, function(err) {
-          function handledate_replacer(key, val) {
-            if (_.isDate(val)) {
-              return val.toISOString()
-            } else return val
-          }
+        // An update merges into the stored entity, as the other entity
+        // stores do: fields absent from the update are kept. The option
+        // merge: false, or merge$: false on the entity, replaces it.
+        var merge = !create && !(false === options.merge || false === ent.merge$)
 
+        function handledate_replacer(key, val) {
+          if (_.isDate(val)) {
+            return val.toISOString()
+          } else return val
+        }
+
+        ensurefolder(folderpath, function(err) {
           if (good(args, err, cb)) {
             var filepath = Path.join(folderpath, ent.id + '.json')
-            var entdata = ent.data$()
-            var jsonstr = JSON.stringify(entdata, handledate_replacer)
 
-            if (options.must_merge) {
-              return cb(error('store-merge-unsupported', { args: args }))
-            }
+            // The JSON round trip drops undefined fields, so that they
+            // do not overwrite stored ones.
+            var entdata = JSON.parse(
+              JSON.stringify(ent.data$(), handledate_replacer)
+            )
 
-            Fs.writeFile(filepath, jsonstr, function(err) {
-              if (good(args, err, cb)) {
-                seneca.log.debug(
-                  args.actid$,
-                  'save/' + (create ? 'insert' : 'update'),
-                  ent,
-                  desc
-                )
-                cb(null, ent)
-              }
-            })
+            inturn(
+              filepath,
+              function(cb) {
+                if (!merge) {
+                  return write(filepath, entdata, cb)
+                }
+
+                Fs.readFile(filepath, function(err, jsonstr) {
+                  if (err && 'ENOENT' === err.code) {
+                    return write(filepath, entdata, cb)
+                  } else if (good(args, err, cb)) {
+                    try {
+                      var data = JSON.parse(jsonstr)
+                    } catch (err) {
+                      return good(args, err, cb)
+                    }
+                    write(filepath, Object.assign(data, entdata), cb)
+                  }
+                })
+              },
+              cb
+            )
           }
         })
+
+        function write(filepath, data, cb) {
+          var jsonstr = JSON.stringify(data)
+
+          writefile(filepath, jsonstr, function(err) {
+            if (good(args, err, cb)) {
+              seneca.log.debug(
+                'save/' + (create ? 'insert' : 'update'),
+                ent,
+                desc
+              )
+              // Reply with a copy of what was stored, so that later
+              // changes to either object stay apart.
+              cb(null, ent.make$(parse_json(jsonstr)))
+            }
+          })
+        }
       }
     },
 
@@ -215,7 +310,7 @@ function jsonfile_store(options) {
 
             do_load(args, qent, filepath, function(err, fent) {
               if (good(args, err, cb)) {
-                seneca.log.debug(args.actid$, 'load', q, fent, desc)
+                seneca.log.debug('load', q, fent, desc)
                 cb(null, fent)
               }
             })
@@ -260,7 +355,7 @@ function jsonfile_store(options) {
             next_remove(0)
           }
         })
-      } else {
+      } else if( 0 < Object.keys(q).length ) {
         q.limit$ = 1
         do_list(args, qent, q, function(err, list) {
           if (good(args, err, cb)) {
@@ -275,6 +370,7 @@ function jsonfile_store(options) {
           }
         })
       }
+      else cb()
     },
 
     close: function(args, done) {
@@ -282,17 +378,26 @@ function jsonfile_store(options) {
     },
 
     native: function(args, done) {
-      done(null, options.folder)
+      done(null, options)
     }
   }
 
-  var storedesc = seneca.store.init(seneca, options, store)
+  // @seneca/entity exports the store initializer as entity/init.
+  var storeInit = seneca.export('entity/init')
+  if ('function' !== typeof storeInit) {
+    throw new Error(
+      name +
+        ': load @seneca/entity before this plugin, for example ' +
+        "seneca.use('@seneca/entity').use('@seneca/jsonfile-store')"
+    )
+  }
+  var storedesc = storeInit(seneca, options, store)
   var tag = storedesc.tag
   var desc = storedesc.desc
 
   seneca.add({ init: store.name, tag: tag }, function(args, done) {
-    Fs.exists(options.folder, function(exists) {
-      if (!exists) {
+    Fs.stat(options.folder, function(err) {
+      if (err) {
         return done(
           error('folder-not-found', { folder: options.folder, store: desc })
         )

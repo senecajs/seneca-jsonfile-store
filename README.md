@@ -3,10 +3,7 @@
 
 # @seneca/jsonfile-store
 
-# seneca-jsonfile-store
 [![npm version][npm-badge]][npm-url]
-[![Build Status][travis-badge]][travis-url]
-[![Dependency Status][david-badge]][david-url]
 [![Gitter][gitter-badge]][gitter-url]
 
 | ![Voxgig](https://www.voxgig.com/res/img/vgt01r.png) | This open source module is sponsored and supported by [Voxgig](https://www.voxgig.com). |
@@ -20,28 +17,30 @@ workloads, and as a example of a storage plugin code base.
 For a gentle introduction to Seneca itself, see the [senecajs.org][seneca.js] site.
 
 ### Seneca compatibility
-Supports Seneca versions **1.x** - **3.x**
+Supports Seneca **4** (`seneca` `^4.0.0`) with `@seneca/entity` `^29.0.0`,
+on Node.js 24 or later. Seneca 3 users stay on `seneca-jsonfile-store@1`.
 
 ### Supported functionality
-All Seneca data store supported functionality is implemented in [seneca-store-test](https://github.com/senecajs/seneca-store-test) as a test suite. The tests represent the store functionality specifications.
+All Seneca data store supported functionality is implemented in [@seneca/store-test](https://github.com/senecajs/seneca-store-test) as a test suite. The tests represent the store functionality specifications.
 
 ## Install
 
-To install, simply use npm. Remember you will need to install [Seneca.js][] separately.
+To install, simply use npm. Remember you will need to install [Seneca.js][]
+and `@seneca/entity` separately.
 
 ```sh
-npm install seneca
-npm install seneca-jsonfile-store
+npm install seneca@^4 @seneca/entity @seneca/jsonfile-store
 ```
 
 ## Quick Example
 
 ```js
 var seneca = require('seneca')()
-seneca.use('jsonfile-store', {
-  folder:'/path/to/my-db-folder'
-})
-.use('entity')
+seneca
+  .use('@seneca/entity')
+  .use('@seneca/jsonfile-store', {
+    folder: '/path/to/my-db-folder'
+  })
 
 var apple = seneca.make$('fruit')
 apple.name  = 'Pink Lady'
@@ -50,6 +49,15 @@ apple.save$(function (err, apple) {
   console.log("apple.id = " + apple.id )
 })
 ```
+
+### Options
+
+- `folder`: the folder that holds the data, one subfolder per entity type.
+  It must exist. Default: the current folder.
+- `merge`: `save$` of an existing entity merges the new fields into the
+  stored ones, so fields absent from the update are kept. `false` replaces
+  the stored entity. A single save can also set `merge$: false` on the
+  entity. Default: `true`.
 
 ### Query Support
 The standard Seneca query format is supported:
@@ -126,18 +134,10 @@ npm run test
 
 This plugin stores data as JSON files on disk.
 
-[![npm version][npm-badge]][npm-url]
-[![Build Status][travis-badge]][travis-url]
-[![Dependency Status][david-badge]][david-url]
-[![Gitter][gitter-badge]][gitter-url]
 [MIT]: ./LICENSE
 [Senecajs org]: https://github.com/senecajs/
 [Seneca.js]: https://www.npmjs.com/package/seneca
-[npm-badge]: https://img.shields.io/npm/v/seneca-jsonfile-store.svg
-[npm-url]: https://npmjs.com/package/seneca-jsonfile-store
-[david-badge]: https://david-dm.org/rjrodger/seneca-jsonfile-store.svg
-[david-url]: https://david-dm.org/rjrodger/seneca-jsonfile-store
-[travis-badge]: https://travis-ci.org/senecajs/seneca-jsonfile-store.svg
-[travis-url]: https://travis-ci.org/senecajs/seneca-jsonfile-store
+[npm-badge]: https://img.shields.io/npm/v/@seneca/jsonfile-store.svg
+[npm-url]: https://npmjs.com/package/@seneca/jsonfile-store
 [gitter-badge]: https://badges.gitter.im/Join%20Chat.svg
 [gitter-url]: https://gitter.im/senecajs/seneca
